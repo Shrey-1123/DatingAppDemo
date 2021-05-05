@@ -9,13 +9,21 @@ Extensions in Vs code for .Net
 - Material Icon Theme
 - SqlIte , for Microsoft.EF.core.Sqlite : for database
 
+Namespaces needed:
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="5.0.5"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.5"/>
 
+-------------------------------------------------------------------------------------------------------------------------------------
 Extensions in Vs code for angular
 - angularLnaguage Service : Similar to c# extension for angular suggestions
 - Angular snippents v9
 - brackets pair Colorizer2
 
-
+----------------------------------------------------------------------------------------------------------------------------------------
 Extensions for HTML
 - Auto rename tag
 - Prettier code formatter
@@ -65,5 +73,3 @@ website( go into get started sections>setup and copy commands) : https://angular
  after this process a client angular project will be created, here client name is choosen by us for our angular project
 - cd my-app
   ng serve --open
-- 
-- 
