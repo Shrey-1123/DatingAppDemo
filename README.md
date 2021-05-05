@@ -10,12 +10,12 @@ Extensions in Vs code for .Net
 - SqlIte , for Microsoft.EF.core.Sqlite : for database
 
 Namespaces needed:
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="5.0.5"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.5"/>
+-     PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3"
+-     PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5"
+-     PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5"
+-     PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="5.0.5"
+-     PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5"
+-     PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.5"
 
 -------------------------------------------------------------------------------------------------------------------------------------
 Extensions in Vs code for angular
