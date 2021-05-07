@@ -1,0 +1,5 @@
+<h1>{{title}}</h1>
+<ul>
+    <!-- We need to add forloop for every user-->
+    <li *ngFor='let user of users'>{{user.id}}-{{user.userName}}</li><!--we need to use exact response json of camelcase userName-->
+</ul>
