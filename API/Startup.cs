@@ -57,7 +57,7 @@ namespace API
 
             app.UseRouting();
 
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200")); // ordering matter, we need to use middleware that will allow other origins and for that we will use expressions
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200")); // ordering matter, we need to use middleware that will allow other origins and for that we will use expressions
 
             app.UseAuthorization();
 
