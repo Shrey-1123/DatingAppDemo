@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { User } from './_models/user';
+import { AccountService } from './_services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -11,8 +13,8 @@ export class AppComponent implements OnInit{ // Angular comes with lifecycle eve
   title = 'The Dating App'; // this is called interpolation i.e we can direclty pass data from our agnular componenet to our view.
   users : any; // to turn off type safety, our users can be of any type such as string, numbers, date etc. 
 
-  constructor(private http: HttpClient){} // just the way we did DI in our startup class, we use contructor to add httpclient service that we created in app.module.ts and then injected here
-  
+ // constructor(private http: HttpClient, private accountService: AccountService){} // just the way we did DI in our startup class, we use contructor to add httpclient service that we created in app.module.ts and then injected here
+ constructor(private accountService: AccountService){} 
   ngOnInit() {
     // we need to use this keyword to access any poperty of this class such as title,users , http
     // so when we get http response from the endpoint we need to use subscribe as get method is lazy and 
@@ -20,17 +22,22 @@ export class AppComponent implements OnInit{ // Angular comes with lifecycle eve
     // within subscribe we need define what kind of respone we are expecting
     // since we get a list of users, we used arrow function to specify observable return type
     // which is of this.users type and then if we don't get response we specify error and print it to console
-    this.getUsers();
+    //this.getUsers();
+    this.setCurrentUser();
   }
 
   ///HttpClient is used to make Http Request
 
-    getUsers(){
-      this.http.get('https://localhost:5001/api/users').subscribe(response => {
-        this.users = response;
-  
-      },error =>{
-        console.log(error);
-      })
+    setCurrentUser(){
+      const user : User = JSON.parse(localStorage.getItem('user') ||  '{}');
+      this.accountService.SetCurrentUser(user);
     }
+    // getUsers(){
+    //   this.http.get('https://localhost:5001/api/users').subscribe(response => {
+    //     this.users = response;
+  
+    //   },error =>{
+    //     console.log(error);
+    //   })
+    // }
 }
