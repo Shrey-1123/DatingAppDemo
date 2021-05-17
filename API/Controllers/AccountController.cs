@@ -38,7 +38,7 @@ namespace API.Controllers
 
             return user;
         }*/
-          [HttpPost("register")]
+        [HttpPost("register")]
         public async Task<ActionResult<AppUser>> Register(RegisterDTO registerDTO) // one of the things [ApiController] attributes does is it binds the data provide inside this method as paramter
         {
             if(await UserExists(registerDTO.Username))

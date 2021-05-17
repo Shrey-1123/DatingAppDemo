@@ -9,7 +9,9 @@ namespace API.DTO
     {
         [Required]
         public string Username { get; set; } // we can choose this case sesttve as we like, it wont affect anywhere
+        
         [Required]
+        [StringLength(8,MinimumLength=4)]
         public string Password { get; set; }
     }
 }
