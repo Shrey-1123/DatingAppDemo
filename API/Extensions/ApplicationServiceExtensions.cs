@@ -1,4 +1,5 @@
 using API.Data;
+using API.Helpers;
 using API.Interfaces;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,8 @@ namespace API.Extensions
             // We used Interface along with Tokenservice due to reasons below:
             // 1. Interfaces are easy to mock test
             // 2. Testing is easy
-            
+            services.AddScoped<IUserRepository,UserRepository>();
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly); // we need to specify to AutoMapper that what classes we need to map to and from for that we have used Helpers/AutoMapperProfiles
              services.AddDbContext<DataContext>(options=>
             {
                 options.UseSqlite(config.GetConnectionString("DefaultConnection")); // UseSQlite is available in using Microsoft.EntityFrameworkCore.Sqlite.Core
