@@ -15,6 +15,8 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(private router:Router, private toastr: ToastrService) {}
 
+  // Interceptors are a unique type of Angular Service that we can implement. Interceptors allow us to intercept incoming or outgoing 
+  // HTTP requests using the HttpClient . By intercepting the HTTP request, we can modify or change the value of the request.
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
       catchError(error=>{
