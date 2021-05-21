@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTO;
@@ -91,6 +92,35 @@ namespace API.Controllers
 
           return await _userRepository.GetMemberAsync(username);
 
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser(MemberUpdateDTO memberUpdateDTO)
+        {
+            // inside a contoller we had access to claims principle User
+            // We already have User present i Claimsprincipal and 
+            // we will use FindFirst to fetch first claim and thus we
+            // will use ClaimTypes of NameIdentitfier to fetch
+            // username and then Value to acess data inside the ClaimIdentifier
+
+            // Cliams are based on [key:value] pairs, ? is for nullable coallases
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+
+            //user.City = memberUpdateDTO.City; 
+            // we don't need to do above things for every property if we user autoMapper
+
+            // for maping from memebrdto to user
+            _mapper.Map(memberUpdateDTO,user);
+
+            _userRepository.Update(user);
+
+            if(await _userRepository.SaveAllAsync())
+            {
+                return NoContent();
+            }
+
+            return BadRequest("Failed to Update User");
         }
     }
 }
