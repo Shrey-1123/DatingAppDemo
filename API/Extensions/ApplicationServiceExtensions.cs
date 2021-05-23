@@ -14,6 +14,11 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
+            // we strongly typed a section o app setting file using class and use that as a service.
+            services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+
+            services.AddScoped<IPhotoService,PhotoService>();
+
              // we can use singleton for authentication service (TokenService ) class also bu then it will be active till the whole course when our application runs, and so we used Scoped so that it will be active only till the course of http life cycle adn when request is fines service is disposed
             services.AddScoped<ITokenService,TokenServices>(); 
             // We used Interface along with Tokenservice due to reasons below:
