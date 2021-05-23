@@ -6,57 +6,66 @@ using API.Data;
 using API.DTO;
 using API.Entities;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    
+
     public class AccountController : BaseApiController
     {
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
 
-        public AccountController(DataContext context,ITokenService tokenService)
+        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
         {
+            _mapper = mapper;
             _context = context;
             _tokenService = tokenService;
 
         }
 
-       /* [HttpPost("register")]
-        public async Task<ActionResult<AppUser>> Register(string username,string password) // one of the things [ApiController] attributes does is it binds the data provide inside this method as paramter
-        {
-            using var hmac = new HMACSHA512();
-            var user = new AppUser
-            {
-                UserName = username,
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password)), // GetBytes converts string into byte[]
-                PasswordSalt = hmac.Key
-            };
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+        /* [HttpPost("register")]
+         public async Task<ActionResult<AppUser>> Register(string username,string password) // one of the things [ApiController] attributes does is it binds the data provide inside this method as paramter
+         {
+             using var hmac = new HMACSHA512();
+             var user = new AppUser
+             {
+                 UserName = username,
+                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password)), // GetBytes converts string into byte[]
+                 PasswordSalt = hmac.Key
+             };
+             _context.Users.Add(user);
+             await _context.SaveChangesAsync();
 
-            return user;
-        }*/
+             return user;
+         }*/
         [HttpPost("register")]
-        public async Task<ActionResult<AppUser>> Register(RegisterDTO registerDTO) // one of the things [ApiController] attributes does is it binds the data provide inside this method as paramter
+        public async Task<ActionResult<UserDTO>> Register(RegisterDTO registerDTO) // one of the things [ApiController] attributes does is it binds the data provide inside this method as paramter
         {
-            if(await UserExists(registerDTO.Username))
+            if (await UserExists(registerDTO.Username))
             {
                 return BadRequest("Username taken");
             }
+
+            var user = _mapper.Map<AppUser>(registerDTO);
             using var hmac = new HMACSHA512();
-            var user = new AppUser
-            {
-                UserName = registerDTO.Username.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDTO.Password)), // GetBytes converts string into byte[]
-                PasswordSalt = hmac.Key
-            };
+            
+                user.UserName = registerDTO.Username.ToLower();
+                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDTO.Password));// GetBytes converts string into byte[]
+                user.PasswordSalt = hmac.Key;
+            
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return new UserDTO
+            {
+                Username = user.UserName,
+                Token = _tokenService.CreateToken(user),
+                KnownAs = user.KnownAs
+            };
         }
 
         /*[HttpPost("login")]
@@ -88,13 +97,13 @@ namespace API.Controllers
 
             return user; // Here we see we are returning a user of AppUser type before adding token so we need to create another DTO class containting username and TOken
         }*/
-         [HttpPost("login")]
+        [HttpPost("login")]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
         {
             var user = await _context.Users
-            .Include(p=>p.Photos)
-            .SingleOrDefaultAsync(x=>x.UserName==loginDTO.Username);
-            if(user==null)
+            .Include(p => p.Photos)
+            .SingleOrDefaultAsync(x => x.UserName == loginDTO.Username);
+            if (user == null)
             {
                 return Unauthorized("Invalid Username");
             }
@@ -109,9 +118,9 @@ namespace API.Controllers
             // for computedHash and we can compare the hascode of stored password from database if it matches then user is Valid
 
             //since out computeHash/ salted password is byte[] we need to loop over
-            for(int i=0;i<computedHash.Length;i++)
+            for (int i = 0; i < computedHash.Length; i++)
             {
-                if(computedHash[i]!=user.PasswordHash[i])
+                if (computedHash[i] != user.PasswordHash[i])
                 {
                     return Unauthorized("Invalid User");
                 }
@@ -121,19 +130,20 @@ namespace API.Controllers
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
-                PhotoUrl = user.Photos.FirstOrDefault(x=>x.IsMain)?.Url
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                KnownAs = user.KnownAs
             }; // After adding token things
         }
 
-            private async Task<bool> UserExists(string username)
-            {
-                
-                return await _context.Users.AnyAsync(x => x.UserName==username.ToLower()); // check any username in out table matche with our username
-                //return await _context.Users.FindAsync(x => x.UserName==username.ToLower());
-                // Findasync is used to get data by primary key
-               
-            }
-        
+        private async Task<bool> UserExists(string username)
+        {
+
+            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower()); // check any username in out table matche with our username
+                                                                                         //return await _context.Users.FindAsync(x => x.UserName==username.ToLower());
+                                                                                         // Findasync is used to get data by primary key
+
+        }
+
 
     }
 }
