@@ -56,7 +56,7 @@
             <input type="radio" value='female' formControlName='gender' class="ml-3"> Female
         </label>
     </div>
-    <app-text-input [formControl]='registerForm.controls["username"]' [label]='"Username"'></app-text-input>
+    <app-text-input [formControl]='registerForm.controls["username"]' pattern="^[A-Z].*" [label]='"Username"'></app-text-input>
     <app-text-input [formControl]='registerForm.controls["knownAs"]' [label]='"Known As"'></app-text-input>
     <app-date-input [formControl]='registerForm.controls["dateOfBirth"]' [label]='"Date Of Birth"' 
       [maxDate]='maxDate'></app-date-input>

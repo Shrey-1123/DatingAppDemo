@@ -5,6 +5,8 @@
     class="form-control" 
     [formControl]="ngControl.control"
     placeholder={{label}}>
+     <div *ngIf="ngControl.control?.errors?.pattern"
+    class="invalid-feedback">{{label}} should start with a Capital letter</div>
     <div *ngIf="ngControl.control?.errors?.required"
     class="invalid-feedback">Please type a {{label}}</div>
     <div *ngIf="ngControl.control?.errors?.minlength"

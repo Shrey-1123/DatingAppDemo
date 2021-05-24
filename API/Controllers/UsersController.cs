@@ -6,6 +6,7 @@ using API.Data;
 using API.DTO;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -59,8 +60,11 @@ namespace API.Controllers
             
         }*/
 
+        // This controller should be smart enough to match query string paramter with this paramter inside GetUsers
+        // BUT THIS WILL NOT HAPPEN, OUR CONTROLLER IS NOT SMART ENOUGH
+        // we need to specify that is coming from a query string by using [FromQuery]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery]UserParams userParams)
         {
             //return await _userRepository.GetUsersAsync();// this line will throw type error we need to wrap result into an Ok response since it is actionResult
             // Solution :
@@ -78,7 +82,12 @@ namespace API.Controllers
 
             // return Ok(usersToReturn);
 
-            var users = await _userRepository.GetMembersAsync();
+           // var users = await _userRepository.GetMembersAsync();
+
+           //after pagination
+           var users = await _userRepository.GetMembersAsync(userParams);
+           Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount
+                                  , users.TotalPages);
 
             return Ok(users);
 
