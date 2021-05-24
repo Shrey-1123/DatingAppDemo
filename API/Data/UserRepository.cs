@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,11 +33,28 @@ namespace API.Data
 
         public async Task<PageList<MemberDTO>> GetMembersAsync(UserParams userParams)
         {
-            var query = _context.Users
-                            .OrderBy(x=>x.UserName)
-                            .ProjectTo<MemberDTO>(_mapper.ConfigurationProvider)
-                            .AsNoTracking();
-            return await PageList<MemberDTO>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
+            // var query = _context.Users
+            //                 .OrderBy(x=>x.UserName)
+            //                 .ProjectTo<MemberDTO>(_mapper.ConfigurationProvider)
+            //                 .AsNoTracking();
+            var query = _context.Users.AsQueryable();
+
+             // all users except current logged in user
+             query = query.Where(u=>u.UserName != userParams.CurrentUsername).OrderBy(u=>u.UserName);  
+
+             // filter same types of Genders
+             query = query.Where(u => u.Gender == userParams.Gender); 
+
+             var minDob = DateTime.Today.AddYears(-userParams.MaxAge -1);
+             var maxDob = DateTime.Today.AddYears(-userParams.MinAge);
+            
+            // filer user by DOB
+             query = query.Where(u=>u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
+
+
+
+            return await PageList<MemberDTO>.CreateAsync(query.ProjectTo<MemberDTO>(_mapper.ConfigurationProvider),
+             userParams.PageNumber, userParams.PageSize);
         }
 
         // public async Task<IEnumerable<MemberDTO>> GetMembersAsync()
