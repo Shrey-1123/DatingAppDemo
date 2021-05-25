@@ -21,13 +21,9 @@ export class MemberListComponent implements OnInit {
  user:User;
  genderList = [{value: 'male', display: 'Males'}, {value: 'female', display: 'Female'}]
 
-  constructor(private memberService: MembersService, private accountService: AccountService) { 
+  constructor(private memberService: MembersService) { 
 
-    this.accountService.currentUser$.pipe(take(1)).subscribe(user=>{
-
-      this.user = user;
-      this.userParams = new UserParams(user);
-    })
+    this.userParams = this.memberService.getUserParmas(); // memberServce ka userParams mien filter cache kiya h islie hmlog uska service use kr rhe h rather than accountService 
   }
 
   ngOnInit(): void {
@@ -43,6 +39,7 @@ export class MemberListComponent implements OnInit {
   // we will prvide current page number and page sze then we will load the response recieved by the getMembers methods of
   // MemberService and then change the response header as pagination
  loadMembers(){
+   this.memberService.setUserParams(this.userParams);
    this.memberService.getMembers(this.userParams).subscribe(response=>{
      this.members = response.result;
      this.pagination = response.pagination;
@@ -51,12 +48,15 @@ export class MemberListComponent implements OnInit {
  }
  
  resetFilters(){
-   this.userParams = new UserParams(this.user);
+
+  //  this.userParams = new UserParams(this.user);
+  this.userParams = this.memberService.resetUserParams();
    this.loadMembers();
  }
  pageChanged(event: any)
  {
    this.userParams.pageNumber = event.page; // this will change current page number
+   this.memberService.setUserParams(this.userParams);
    this.loadMembers();
  }
 

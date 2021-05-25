@@ -23,7 +23,10 @@ namespace API.Services
             //step 1 : Claim for what you need to authenticate in  our case we are authenticating Username
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId,user.UserName)
+                //new Claim(JwtRegisteredClaimNames.NameId,user.UserName)
+                // we are going to user Unique Name Id rather than just usrename as ID
+                new Claim(JwtRegisteredClaimNames.NameId,user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName,user.UserName)
             };
             // step 2 : Create some signing credentials and we pass security key and choose security algorithm
              var creds = new SigningCredentials(_key,SecurityAlgorithms.HmacSha512Signature);

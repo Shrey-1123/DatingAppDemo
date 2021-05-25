@@ -51,6 +51,13 @@ namespace API.Data
             // filer user by DOB
              query = query.Where(u=>u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
 
+             // Sorting
+             query = userParams.OrderBy switch
+             {
+                 "created" => query.OrderByDescending(u => u.Created),
+                 _ => query.OrderByDescending(u=>u.LastActive)
+             };
+
 
 
             return await PageList<MemberDTO>.CreateAsync(query.ProjectTo<MemberDTO>(_mapper.ConfigurationProvider),
