@@ -22,9 +22,9 @@ import { AccountService } from './account.service';
 export class MembersService {
   baseUrl = environment.apiUrl;
   members: Member[]=[];
- memeberCache= new Map();
- userParams: UserParams;
- user: User;
+  memeberCache= new Map();
+  userParams: UserParams;
+  user: User;
   constructor(private http: HttpClient, private accountService: AccountService) { 
 
     
@@ -82,6 +82,7 @@ export class MembersService {
 
     // passing value of Current pageNumber and pageSize to UsersController getMembers method
 
+    /// CAHCHING
 
     // the main idea of using memberCache is that we need optimise the query slections,
     // our params is inside the userParams adn every time we apply filters a new query is genearted for for each type of new userParams
@@ -93,7 +94,7 @@ export class MembersService {
     // and hmara pichla members vala page jldi load ho jayega
     return this.getPaginatedResult<Member[]>(this.baseUrl+'users', params)
     .pipe(map(response=>{
-      this,this.memeberCache.set(Object.values(userParams).join('-'), response);
+      this.memeberCache.set(Object.values(userParams).join('-'), response);
 
       return response;
     }))
@@ -103,7 +104,7 @@ export class MembersService {
   {
    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
 
-    return this.http.get<T>(this.baseUrl + 'users', { observe: 'response', params }).pipe(
+    return this.http.get<T>(url, { observe: 'response', params }).pipe(
       map(response => {
         //console.log(response);
         // seeting result property of PaginatedResult class to response recieved through API
@@ -172,6 +173,18 @@ export class MembersService {
     return this.http.delete(this.baseUrl + 'users/delete-photo/'+ photoId);
   }
 
+  addLike(username:string){
+    return this.http.post(this.baseUrl + 'likes/'+ username,{})
+  }
 
+  getLikes(predicate:string, pageNumber, pageSize)
+  {
+    let newparams = this.getPaginationHeaders(pageNumber, pageSize);
+    newparams = newparams.append('predicate', predicate);
+    // return this.http.get<Partial<Member[]>>(this.baseUrl+'likes?predicate='+predicate);
+    console.log(newparams);
+    console.log(this.baseUrl);
+    return this.getPaginatedResult<Partial<Member[]>>(this.baseUrl+'likes', newparams);
+  }
  
 }

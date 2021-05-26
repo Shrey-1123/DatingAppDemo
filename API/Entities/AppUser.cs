@@ -31,6 +31,9 @@ namespace API.Entities
         // public int GetAge(){
         //     return DateOfBirth.CalculateAge();
         // }
+
+        public ICollection<UserLike> LikedByUsers { get; set; } // this is the list of users that liked currently logged in user
+        public ICollection<UserLike> LikedUsers { get; set; } // this is the list of user that the currenlty logged in user has liked
         
 
     }

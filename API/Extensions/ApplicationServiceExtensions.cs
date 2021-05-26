@@ -27,6 +27,8 @@ namespace API.Extensions
             services.AddScoped<IUserRepository,UserRepository>();
             services.AddScoped<LogUserActitvity>();
 
+            services.AddScoped<ILikesRepository,LikesRepository>();
+
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly); // we need to specify to AutoMapper that what classes we need to map to and from for that we have used Helpers/AutoMapperProfiles
              services.AddDbContext<DataContext>(options=>
             {
